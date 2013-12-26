@@ -3,7 +3,7 @@ kinesis-poster-worker
 
 Kinesis Poster and Worker example.  
 
-Poster is a multi-threaded client that creates ```poster_count``` poster 
+Poster is a multi-threaded client that creates ```--poster_count``` poster 
 threads to: 
  1. generate random characters, and then
  2. put the generated random characters into the stream as records
