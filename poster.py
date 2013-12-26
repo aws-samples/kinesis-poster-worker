@@ -10,7 +10,7 @@ from argparse import RawTextHelpFormatter
 from random import choice
 from string import lowercase
 from boto.kinesis.exceptions import ResourceNotFoundException
-
+	
 
 kinesis = boto.connect_kinesis()
 
@@ -38,8 +38,8 @@ def sum_posts(kinesis_actors):
 	return total_records
 
 class KinesisPoster(threading.Thread):
-	"""The Poster thread that repeatedly posts records to a given Kinesis 
-	stream.
+	"""The Poster thread that repeatedly posts records to shards in a given 
+	Kinesis stream.
 	"""
 	def __init__(self, stream_name, shard_count, partition_key, 
 				 poster_time=30, quiet=False,
@@ -100,11 +100,13 @@ if __name__ == '__main__':
 	parser.add_argument('shard_count', type=int, 
 		help='''the number of shards in the Kinesis stream''')
 	parser.add_argument('--partition_key', default='PyKinesisExample', 
-		help='''the partition_key to use when communicating records to the Kinesis stream''')
+		help='''the partition key to use when communicating records to the Kinesis stream
+[default: 'PyKinesisExample']''')
 	parser.add_argument('--poster_count', type=int, default=1, 
-		help='''the number of poster threads''')
+		help='''the number of poster threads [default: 1]''')
 	parser.add_argument('--poster_time', type=int, default=30, 
-		help='''how long the poster threads should put records into the stream''')
+		help='''how many seconds the poster threads should put records into the stream
+[default: 30]''')
 	parser.add_argument('--quiet', action='store_true', default=False, 
 		help='''reduce console output to just initialization info''')
 	parser.add_argument('--delete_stream', action='store_true', default=False, 
