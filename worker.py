@@ -11,6 +11,13 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 from boto.kinesis.exceptions import ProvisionedThroughputExceededException
 import poster
 
+# To preclude inclusion of aws keys into this code, you may add your 
+# AWS credentials to the file:
+#     ~/.boto
+# as follows:
+#     [Credentials]
+#     aws_access_key_id = <your access key>
+#     aws_secret_access_key = <your secret key>
 
 kinesis = boto.connect_kinesis()
 iter_type_at = 'AT_SEQUENCE_NUMBER'
@@ -74,14 +81,14 @@ class KinesisWorker(threading.Thread):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
 		description='''Create or connect to a Kinesis stream and create workers 
-that hunt for "egg" in records from each shard.''', 
+that hunt for the word "egg" in records from each shard.''', 
 		formatter_class=RawTextHelpFormatter)
 	parser.add_argument('stream_name', 
 		help='''the name of the Kinesis stream to either create or connect''')
 	parser.add_argument('--worker_time', type=int, default=30, 
-		help='''the worker's duration of operation''')
-	parser.add_argument('--sleep_interval', type=float, default=0.5, 
-		help='''the worker's work loop sleep interval''')
+		help='''the worker's duration of operation in seconds [default: 30]''')
+	parser.add_argument('--sleep_interval', type=float, default=0.1, 
+		help='''the worker's work loop sleep interval in seconds [default: 0.1]''')
 
 	args = parser.parse_args()
 
