@@ -10,7 +10,14 @@ from argparse import RawTextHelpFormatter
 from random import choice
 from string import lowercase
 from boto.kinesis.exceptions import ResourceNotFoundException
-	
+
+# To preclude inclusion of aws keys into this code, you may add your 
+# AWS credentials to the file:
+#     ~/.boto
+# as follows:
+#     [Credentials]
+#     aws_access_key_id = <your access key>
+#     aws_secret_access_key = <your secret key>
 
 kinesis = boto.connect_kinesis()
 
@@ -24,6 +31,8 @@ def get_or_create_stream(stream_name, shard_count):
 			separators=(',', ': '))
 	except ResourceNotFoundException as rnfe:
 		while (stream is None) or (stream['StreamStatus'] is not 'ACTIVE'):
+			print ('Could not find ACTIVE stream:{0} trying to create.'.format(
+				stream_name))
 			stream = kinesis.create_stream(stream_name, shard_count)
 			time.sleep(0.5)
 
@@ -41,8 +50,7 @@ class KinesisPoster(threading.Thread):
 	"""The Poster thread that repeatedly posts records to shards in a given 
 	Kinesis stream.
 	"""
-	def __init__(self, stream_name, shard_count, partition_key, 
-				 poster_time=30, quiet=False,
+	def __init__(self, stream_name, partition_key, poster_time=30, quiet=False,
 				 name=None, group=None, args=(), kwargs={}):
 		super(KinesisPoster, self).__init__(name=name, group=group, 
 										  args=args, kwargs=kwargs)
@@ -87,26 +95,26 @@ class KinesisPoster(threading.Thread):
 			self.add_records(self.default_records)
 			records_put = self.put_all_records()
 			if self.quiet is False:
-				print('Records Put:', records_put)
+				print(self.partition_key, ' Records Put:', records_put)
 				print(' Total Records Put:', self.total_records)
 
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
-		description='Create or attach to a Kinesis stream and put records in the stream', 
+		description='''Create or attach to a Kinesis stream and put records in the stream''', 
 		formatter_class=RawTextHelpFormatter)
 	parser.add_argument('stream_name', 
-		help='''the name of the Kinesis stream to either create or connect''')
-	parser.add_argument('shard_count', type=int, 
-		help='''the number of shards in the Kinesis stream''')
+		help='''the name of the Kinesis stream to either connect with or create''')
+	parser.add_argument('--shard_count', type=int, default=1,
+		help='''the number of shards to create in the stream, if creating [default: 1]''')
 	parser.add_argument('--partition_key', default='PyKinesisExample', 
-		help='''the partition key to use when communicating records to the Kinesis stream
-[default: 'PyKinesisExample']''')
-	parser.add_argument('--poster_count', type=int, default=1, 
-		help='''the number of poster threads [default: 1]''')
+		help='''the partition key to use when communicating records to the 
+stream [default: 'PyKinesisExample-##']''')
+	parser.add_argument('--poster_count', type=int, default=10, 
+		help='''the number of poster threads [default: 10]''')
 	parser.add_argument('--poster_time', type=int, default=30, 
-		help='''how many seconds the poster threads should put records into the stream
-[default: 30]''')
+		help='''how many seconds the poster threads should put records into 
+the stream [default: 30]''')
 	parser.add_argument('--quiet', action='store_true', default=False, 
 		help='''reduce console output to just initialization info''')
 	parser.add_argument('--delete_stream', action='store_true', default=False, 
@@ -131,13 +139,15 @@ if __name__ == '__main__':
 			threads = []
 			# Create a KinesisPoster thread up to the poster_count value
 			for pid in xrange(args.poster_count):
+				# create poster name per poster thread
 				poster_name = 'shard_poster:'+str(pid)
+				# create partition key per poster thread
+				part_key = args.partition_key + '-' + str(pid)
 				poster = KinesisPoster(
 					stream_name=args.stream_name, 
-					shard_count=args.shard_count,
-					partition_key=args.partition_key, 
+					partition_key=part_key, # poster's partition key
 					poster_time=args.poster_time,
-					name=poster_name,
+					name=poster_name, # thread name
 					quiet=args.quiet)
 				poster.daemon = True
 				threads.append(poster)
