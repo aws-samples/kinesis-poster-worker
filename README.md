@@ -13,7 +13,7 @@ Worker is a thread-per-shard client that:
  2. seeks through the records for the word '```egg```'
 
 Multiple Poster or Worker clients can be run simultaneously to generate 
-multi-threaded load on the Kinesis stream. 
+multi-threaded load on a Kinesis stream. 
 
 Detailed help: ```python poster.py --help``` ..or  ```python worker.py --help```, respectively.  
 
