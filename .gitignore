@@ -1,0 +1,70 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.pdb
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+CHANGELOG
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Virtual Enviros #
+###################
+venv
+
+# BDist Artifacts #
+###################
+build
+dist
+
+# IDE and Editor artifacts #
+############################
+*.bbprojectd
+.idea
+*.egg-info
+.project
+.settings
+
+# Maven artifacts and targets #
+################################
+target/
+.classpath
+
+# AWS Credentials #
+####################
+AwsCredentials.properties
+aws.credentials
+/projects/dev-qs/nbproject/private/
+build_tmp/

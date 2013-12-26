@@ -1,22 +1,18 @@
 import sys
-# until Kinesis Python SDK is released the absolute path 
-# to the Kinesis SDK must be included
-sys.path.insert(0, 
-	'/Users/brettf/dev/AWSSA-collab/examples/python/kinesis-poster-worker/boto-2.9.8')
 import boto
 import argparse
 import json
 import threading
 import time
+import datetime
 
 from argparse import RawTextHelpFormatter
-import datetime
-from boto.canal.exceptions import ResourceNotFoundException
-from boto.canal.exceptions import ProvisionedThroughputExceededException
+from boto.kinesis.exceptions import ResourceNotFoundException
+from boto.kinesis.exceptions import ProvisionedThroughputExceededException
 import poster
 
 
-kinesis = boto.connect_canal()
+kinesis = boto.connect_kinesis()
 iter_type_at = 'AT_SEQUENCE_NUMBER'
 iter_type_after = 'AFTER_SEQUENCE_NUMBER'
 iter_type_trim = 'TRIM_HORIZON'
@@ -31,7 +27,8 @@ def find_eggs(records):
 
 
 class KinesisWorker(threading.Thread):
-	"""docstring for KinesisWorker"""
+	"""The Worker thread that repeatedly gets records from a given Kinesis 
+	stream."""
 	def __init__(self, stream_name, shard_id, iterator_type, 
 				 worker_time=30, sleep_interval=0.5,
 				 name=None, group=None, args=(), kwargs={}):
@@ -58,7 +55,7 @@ class KinesisWorker(threading.Thread):
 		finish = start + datetime.timedelta(seconds=self.worker_time)
 		while finish > datetime.datetime.now():
 			try:
-				response = kinesis.get_next_records(next_iterator, limit=25)
+				response = kinesis.get_records(next_iterator, limit=25)
 				self.total_records += len(response)
 
 				if len(response['Records']) > 0:

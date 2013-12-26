@@ -1,23 +1,18 @@
 import sys
-# until Kinesis Python SDK is released the absolute path 
-# to the Kinesis SDK must be included
-sys.path.insert(0, 
-	'/Users/brettf/dev/AWSSA-collab/examples/python/kinesis-poster-worker/boto-2.9.8')
 import boto
 import argparse
 import json
 import threading
-import datetime
 import time
+import datetime
 
 from argparse import RawTextHelpFormatter
-from boto.canal.exceptions import ResourceNotFoundException
 from random import choice
 from string import lowercase
+from boto.kinesis.exceptions import ResourceNotFoundException
 
-print boto.__file__
 
-kinesis = boto.connect_canal()
+kinesis = boto.connect_kinesis()
 
 make_string = lambda(x): "".join(choice(lowercase) for i in range(x))
 
@@ -35,13 +30,17 @@ def get_or_create_stream(stream_name, shard_count):
 	return stream
 
 def sum_posts(kinesis_actors):
+	"""Sum all posts across an array of KinesisPosters
+	""" 
 	total_records = 0
 	for actor in kinesis_actors:
 		total_records += actor.total_records
 	return total_records
 
 class KinesisPoster(threading.Thread):
-	"""docstring for KinesisPoster"""
+	"""The Poster thread that repeatedly posts records to a given Kinesis 
+	stream.
+	"""
 	def __init__(self, stream_name, shard_count, partition_key, 
 				 poster_time=30, quiet=False,
 				 name=None, group=None, args=(), kwargs={}):
@@ -60,9 +59,12 @@ class KinesisPoster(threading.Thread):
 		self.total_records = 0
 
 	def add_records(self, records):
+		""" Add given records to the KinesisPoster's pending records list.
+		"""
 		self._pending_records.extend(records)
 
 	def put_all_records(self):
+		"""Put all pending records in the Kinesis stream."""
 		precs = self._pending_records
 		self._pending_records = []
 		self.put_records(precs)
@@ -70,6 +72,7 @@ class KinesisPoster(threading.Thread):
 		return len(precs)
 
 	def put_records(self, records):
+		"""Put the given records in the Kinesis stream."""
 		for record in records:
 			response = kinesis.put_record(
 				stream_name=self.stream_name, 
@@ -111,17 +114,20 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 	if (args.delete_stream):
+		# delete the given Kinesis stream name
 		kinesis.delete_stream(stream_name=args.stream_name)
 	else:
 		start_time = datetime.datetime.now()
 
 		if args.describe_only is True:
+			# describe the given Kinesis stream name
 			stream = kinesis.describe_stream(args.stream_name)
 			print json.dumps(stream, sort_keys=True, indent=2, 
 				separators=(',', ': '))
 		else:
 			stream = get_or_create_stream(args.stream_name, args.shard_count)
 			threads = []
+			# Create a KinesisPoster thread up to the poster_count value
 			for pid in xrange(args.poster_count):
 				poster_name = 'shard_poster:'+str(pid)
 				poster = KinesisPoster(
