@@ -11,6 +11,8 @@
 # implied. See the License for the specific language governing permissions and
 # limitations under the License. 
 
+from __future__ import print_function
+
 import sys
 import boto
 import argparse
@@ -43,7 +45,7 @@ def find_eggs(records):
 		text = record['Data'].lower()
 		locs = [n for n in xrange(len(text)) if text.find('egg', n) == n]
 		if len(locs) > 0:
-			print '+--> egg location:', locs, '<--+'
+			print ('+--> egg location:', locs, '<--+')
 
 
 class KinesisWorker(threading.Thread):
@@ -64,12 +66,12 @@ class KinesisWorker(threading.Thread):
 
 	def run(self):
 		my_name = threading.current_thread().name
-		print '+ KinesisWorker:', my_name
-		print '+-> working with iterator:', self.iterator_type
+		print ('+ KinesisWorker:', my_name)
+		print ('+-> working with iterator:', self.iterator_type)
 		response = kinesis.get_shard_iterator(self.stream_name, 
 			self.shard_id, self.iterator_type)
 		next_iterator = response['ShardIterator']
-		print '+-> getting next records using iterator:', next_iterator
+		print ('+-> getting next records using iterator:', next_iterator)
 		
 		start = datetime.datetime.now()
 		finish = start + datetime.timedelta(seconds=self.worker_time)
@@ -79,8 +81,8 @@ class KinesisWorker(threading.Thread):
 				self.total_records += len(response)
 
 				if len(response['Records']) > 0:
-					print '\n+-> {1} Got {0} Worker Records'.format(
-						len(response['Records']), my_name)
+					print ('\n+-> {1} Got {0} Worker Records'.format(
+						len(response['Records']), my_name))
 					find_eggs(response['Records'])
 				else:
 					sys.stdout.write('.')
@@ -88,7 +90,7 @@ class KinesisWorker(threading.Thread):
 				next_iterator = response['NextShardIterator']
 				time.sleep(self.sleep_interval)
 			except ProvisionedThroughputExceededException as ptee:
-				print ptee.message
+				print (ptee.message)
 				time.sleep(5)
 
 if __name__ == '__main__':
@@ -106,15 +108,15 @@ that hunt for the word "egg" in records from each shard.''',
 	args = parser.parse_args()
 
 	stream = kinesis.describe_stream(args.stream_name)
-	print json.dumps(stream, sort_keys=True, indent=2, separators=(',', ': '))
+	print (json.dumps(stream, sort_keys=True, indent=2, separators=(',', ': ')))
 	shards = stream['StreamDescription']['Shards']
-	print '# Shard Count:', len(shards)
+	print ('# Shard Count:', len(shards))
 
 	threads = []
 	start_time = datetime.datetime.now()
 	for shard_id in xrange(len(shards)):
 		worker_name = 'shard_worker:'+str(shard_id)
-		print '#-> shardId:', shards[shard_id]['ShardId']
+		print ('#-> shardId:', shards[shard_id]['ShardId'])
 		worker = KinesisWorker(
 			stream_name=args.stream_name, 
 			shard_id=shards[shard_id]['ShardId'], 
@@ -126,7 +128,7 @@ that hunt for the word "egg" in records from each shard.''',
 			)
 		worker.daemon = True
 		threads.append(worker)
-		print '#-> starting: ', worker_name
+		print ('#-> starting: ', worker_name)
 		worker.start()
 
 	# Wait for all threads to complete
@@ -135,7 +137,7 @@ that hunt for the word "egg" in records from each shard.''',
 	finish_time = datetime.datetime.now()
 	duration = (finish_time - start_time).total_seconds()
 	total_records = poster.sum_posts(threads)
-	print "-=> Exiting Worker Main <=-"
-	print "  Total Records:", total_records
-	print "     Total Time:", duration
-	print "  Records / sec:", total_records / duration
+	print ("-=> Exiting Worker Main <=-")
+	print ("  Total Records:", total_records)
+	print ("     Total Time:", duration)
+	print ("  Records / sec:", total_records / duration)
