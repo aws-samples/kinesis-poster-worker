@@ -18,5 +18,3 @@ multi-threaded load on a Kinesis stream.
 Detailed help: ```python poster.py --help``` ..or  ```python worker.py --help```, respectively.  
 
 keywords: kinesis poster worker put get
-
-license: Apache 2.0
