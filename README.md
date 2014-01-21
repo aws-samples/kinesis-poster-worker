@@ -21,11 +21,13 @@ To get this example working with Python 2.7+, first install boto using:
 ```pip install boto ``` and follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use.
 The credentials you use should permit at least the following Kinesis actions:
 ``` CreateStream, DescribeStream, GetRecords, GetShardIterator, ListStreams, 
-PutRecord```. ```MergeShards``` and ```SplitShard``` are unused in this example.
+PutRecord```. Both the ```MergeShards``` and ```SplitShard``` actions are 
+unused in this example.
 
-Then run ```python poster.py my-first-stream``` and the Poster will attempt 
-to create the Kinesis stream named ```my-first-stream```. In a matter of a few
-minutes the stream will have been created and you can run 
+Once boto is configured with your credentials run 
+```python poster.py my-first-stream``` and the Poster will attempt to create 
+the Kinesis stream named ```my-first-stream```. In a matter of a few minutes 
+the stream will have been created and you can run 
 ```python poster.py my-first-stream``` again. Poster will then use multiple 
 threads to pump records into the stream.
 
