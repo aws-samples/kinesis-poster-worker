@@ -19,7 +19,7 @@ To get this example working with Python 2.7:
 ````
 pip install boto
 ````
-Follow the instructions [here](http://http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use by boto.
+Follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use by boto.
 
 Then for the first run ```python poster.py my-first-stream``` the Poster will 
 attempt to create the Kinesis stream named ```my-first-stream```. In a matter 
