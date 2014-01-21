@@ -28,7 +28,7 @@ Once boto is configured with your credentials run
 ```python poster.py my-first-stream``` and the Poster will attempt to create 
 the Kinesis stream named ```my-first-stream```. In a matter of a few minutes 
 the stream will have been created and you can run 
-```python poster.py my-first-stream``` again. Poster will then use multiple 
+```python poster.py my-first-stream``` again. The Poster will then use multiple 
 threads to pump records into the stream.
 
 Once the Poster is pumping records into the stream, then run 
