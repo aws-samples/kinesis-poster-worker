@@ -22,9 +22,10 @@ pip install boto
 Then follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use by boto.
 
 Then run ```python poster.py my-first-stream``` and the Poster will attempt 
-to create the Kinesis stream named ```my-first-stream```. In a matter of 
-minutes you can run ```python poster.py my-first-stream``` again and Poster
-will use multiple threads to pump records into the newly created stream.
+to create the Kinesis stream named ```my-first-stream```. In a matter of a few
+minutes the stream will have been created and you can run 
+```python poster.py my-first-stream``` again and Poster will use multiple 
+threads to pump records into the stream.
 
 Once the Poster is pumping records into the stream, then run 
 ```python worker.py my-first-stream``` which will start the Worker. The Worker 
