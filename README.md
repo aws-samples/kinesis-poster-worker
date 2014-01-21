@@ -15,6 +15,22 @@ Worker is a thread-per-shard client that:
 Multiple Poster or Worker clients can be run simultaneously to generate 
 multi-threaded load on a Kinesis stream. 
 
-Detailed help: ```python poster.py --help``` ..or  ```python worker.py --help```, respectively.  
+To get this example working with Python 2.7:
+````
+pip install boto
+````
+Follow the instructions [here](http://http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use by boto.
 
-keywords: kinesis poster worker put get
+Then for the first run ```python poster.py my-first-stream``` the Poster will 
+attempt to create the Kinesis stream named ```my-first-stream```. In a matter 
+of minutes you can run ```python poster.py my-first-stream``` again and Poster
+will use multiple threads to pump records into the newly created stream.
+
+Once the Poster is pumping records in you will want to run 
+```python worker.py my-first-stream``` which will start reading records from 
+the Kinesis stream.
+
+For detailed help and configuration options:
+```python poster.py --help``` ..or  ```python worker.py --help```, respectively.  
+
+keywords: aws kinesis poster worker put get boto
