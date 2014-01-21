@@ -14,9 +14,9 @@ _Worker_ is a thread-per-shard client that:
 
 Multiple Poster or Worker clients can be run simultaneously to generate 
 multi-threaded load on a Kinesis stream. 
-
+----
 To get this example working with Python 2.7+, first install boto using: 
-```pip install boto ``` Then follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use by boto.
+```pip install boto ``` and follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use by boto.
 
 Then run ```python poster.py my-first-stream``` and the Poster will attempt 
 to create the Kinesis stream named ```my-first-stream```. In a matter of a few
