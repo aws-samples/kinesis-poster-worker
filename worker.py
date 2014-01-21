@@ -26,8 +26,8 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 from boto.kinesis.exceptions import ProvisionedThroughputExceededException
 import poster
 
-# To preclude inclusion of aws keys into this code, you may add your 
-# AWS credentials to the file:
+# To preclude inclusion of aws keys into this code, you may temporarily add 
+# your AWS credentials to the file:
 #     ~/.boto
 # as follows:
 #     [Credentials]
@@ -120,8 +120,8 @@ that hunt for the word "egg" in records from each shard.''',
 		worker = KinesisWorker(
 			stream_name=args.stream_name, 
 			shard_id=shards[shard_id]['ShardId'], 
-			# iterator_type=iter_type_trim, 
-			iterator_type=iter_type_latest,
+			# iterator_type=iter_type_trim,  # uses TRIM_HORIZON
+			iterator_type=iter_type_latest,  # uses LATEST
 			worker_time=args.worker_time,
 			sleep_interval=args.sleep_interval,
 			name=worker_name

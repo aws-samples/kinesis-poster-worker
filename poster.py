@@ -82,7 +82,7 @@ class KinesisPoster(threading.Thread):
 		self.total_records = 0
 
 	def add_records(self, records):
-		""" Add given records to the KinesisPoster's pending records list.
+		""" Add given records to the Poster's pending records list.
 		"""
 		self._pending_records.extend(records)
 
