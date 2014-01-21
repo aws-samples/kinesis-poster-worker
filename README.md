@@ -24,7 +24,7 @@ Then follow the instructions [here](http://docs.pythonboto.org/en/latest/getting
 Then run ```python poster.py my-first-stream``` and the Poster will attempt 
 to create the Kinesis stream named ```my-first-stream```. In a matter of a few
 minutes the stream will have been created and you can run 
-```python poster.py my-first-stream``` again and Poster will use multiple 
+```python poster.py my-first-stream``` again. Poster will then use multiple 
 threads to pump records into the stream.
 
 Once the Poster is pumping records into the stream, then run 
