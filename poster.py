@@ -11,6 +11,8 @@
 # implied. See the License for the specific language governing permissions and
 # limitations under the License. 
 
+from __future__ import print_function
+
 import sys
 import boto
 import argparse
@@ -24,8 +26,8 @@ from random import choice
 from string import lowercase
 from boto.kinesis.exceptions import ResourceNotFoundException
 
-# To preclude inclusion of aws keys into this code, you may add your 
-# AWS credentials to the file:
+# To preclude inclusion of aws keys into this code, you may temporarily add 
+# your AWS credentials to the file:
 #     ~/.boto
 # as follows:
 #     [Credentials]
@@ -34,14 +36,14 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 
 kinesis = boto.connect_kinesis()
 
-make_string = lambda(x): "".join(choice(lowercase) for i in range(x))
+make_string = lambda x: "".join(choice(lowercase) for i in range(x))
 
 def get_or_create_stream(stream_name, shard_count):
 	stream = None
 	try:
 		stream = kinesis.describe_stream(stream_name)
-		print json.dumps(stream, sort_keys=True, indent=2, 
-			separators=(',', ': '))
+		print (json.dumps(stream, sort_keys=True, indent=2, 
+			separators=(',', ': ')))
 	except ResourceNotFoundException as rnfe:
 		while (stream is None) or (stream['StreamStatus'] is not 'ACTIVE'):
 			print ('Could not find ACTIVE stream:{0} trying to create.'.format(
@@ -99,7 +101,7 @@ class KinesisPoster(threading.Thread):
 				stream_name=self.stream_name, 
 				data=record, partition_key=self.partition_key)
 			if self.quiet is False:
-				print "-= put seqNum:", response['SequenceNumber']
+				print ("-= put seqNum:", response['SequenceNumber'])
 
 	def run(self):
 		start = datetime.datetime.now()
@@ -145,8 +147,8 @@ the stream [default: 30]''')
 		if args.describe_only is True:
 			# describe the given Kinesis stream name
 			stream = kinesis.describe_stream(args.stream_name)
-			print json.dumps(stream, sort_keys=True, indent=2, 
-				separators=(',', ': '))
+			print (json.dumps(stream, sort_keys=True, indent=2, 
+				separators=(',', ': ')))
 		else:
 			stream = get_or_create_stream(args.stream_name, args.shard_count)
 			threads = []
@@ -164,7 +166,7 @@ the stream [default: 30]''')
 					quiet=args.quiet)
 				poster.daemon = True
 				threads.append(poster)
-				print 'starting: ', poster_name
+				print ('starting: ', poster_name)
 				poster.start()
 
 			# Wait for all threads to complete
@@ -174,7 +176,7 @@ the stream [default: 30]''')
 		finish_time = datetime.datetime.now()
 		duration = (finish_time - start_time).total_seconds()
 		total_records = sum_posts(threads)
-		print "-=> Exiting Poster Main <=-"
-		print "  Total Records:", total_records
-		print "     Total Time:", duration
-		print "  Records / sec:", total_records / duration
+		print ("-=> Exiting Poster Main <=-")
+		print ("  Total Records:", total_records)
+		print ("     Total Time:", duration)
+		print ("  Records / sec:", total_records / duration)
