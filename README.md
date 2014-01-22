@@ -25,21 +25,21 @@ and follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_
 PutRecord```. Both the ```MergeShards``` and ```SplitShard``` actions are 
 unused in this example.
 
-Once boto is configured with your credentials run 
+Once boto is configured with your credentials run: 
 ````
-python poster.py my-first-stream
+$ python poster.py my-first-stream
 ```` 
 and the Poster will attempt to create the Kinesis stream named 
 ```my-first-stream```. In a matter of a few minutes the stream will have been 
-created and you can run 
+created and you can run: 
 ````
-python poster.py my-first-stream
+$ python poster.py my-first-stream
 ````
 again. The Poster will then use multiple threads to pump records into the stream.
 
-Once the Poster is pumping records into the stream, then run 
+Once the Poster is pumping records into the stream, then run: 
 ````
-python worker.py my-first-stream
+$ python worker.py my-first-stream
 ```` 
 which will start the Worker. The Worker will then begin reading records from 
 the ```my-first-stream``` Kinesis stream.
