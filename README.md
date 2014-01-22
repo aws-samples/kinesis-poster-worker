@@ -41,7 +41,8 @@ again. The Poster will then use multiple threads to pump records into the stream
 Once the Poster is pumping records into the stream, then run 
 ````
 python worker.py my-first-stream
-```` which will start the Worker. The Worker will then begin reading records from 
+```` 
+which will start the Worker. The Worker will then begin reading records from 
 the ```my-first-stream``` Kinesis stream.
 
 For detailed help and configuration options:
