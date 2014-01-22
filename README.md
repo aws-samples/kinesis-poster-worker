@@ -1,7 +1,7 @@
 kinesis-poster-worker
 =====================
 
-Kinesis Poster and Worker example using Python
+Kinesis Poster and Worker example (aka 'The Egg Finder') using Python
 
 _Poster_ is a multi-threaded client that creates ```--poster_count``` poster 
 threads to: 
