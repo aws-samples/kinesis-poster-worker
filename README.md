@@ -18,22 +18,31 @@ multi-threaded load on a Kinesis stream.
 Getting Started
 ---------------
 To get this example working with Python 2.7+, first install boto 2.23+ using: 
-```pip install boto``` and follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use.
-The credentials you use should permit at least these Kinesis actions:
+````
+$ pip install boto
+````
+and follow the instructions [here](http://docs.pythonboto.org/en/latest/getting_started.html#configuring-boto-credentials) to get your credentials setup for use. The credentials you use should permit at least these Kinesis actions:
 ``` CreateStream, DescribeStream, GetRecords, GetShardIterator, ListStreams & 
 PutRecord```. Both the ```MergeShards``` and ```SplitShard``` actions are 
 unused in this example.
 
 Once boto is configured with your credentials run 
-```python poster.py my-first-stream``` and the Poster will attempt to create 
-the Kinesis stream named ```my-first-stream```. In a matter of a few minutes 
-the stream will have been created and you can run 
-```python poster.py my-first-stream``` again. The Poster will then use multiple 
-threads to pump records into the stream.
+````
+python poster.py my-first-stream
+```` 
+and the Poster will attempt to create the Kinesis stream named 
+```my-first-stream```. In a matter of a few minutes the stream will have been 
+created and you can run 
+````
+python poster.py my-first-stream
+````
+again. The Poster will then use multiple threads to pump records into the stream.
 
 Once the Poster is pumping records into the stream, then run 
-```python worker.py my-first-stream``` which will start the Worker. The Worker 
-will then begin reading records from the ```my-first-stream``` Kinesis stream.
+````
+python worker.py my-first-stream
+```` which will start the Worker. The Worker will then begin reading records from 
+the ```my-first-stream``` Kinesis stream.
 
 For detailed help and configuration options:
 ```python poster.py --help``` ..or  ```python worker.py --help```, respectively.
