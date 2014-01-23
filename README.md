@@ -31,7 +31,7 @@ $ python poster.py my-first-stream
 ```` 
 and the Poster will attempt to create the Kinesis stream named 
 ```my-first-stream```. In a matter of a few minutes the stream will have been 
-created and you can run: 
+created and you can again run: 
 ````
 $ python poster.py my-first-stream
 ````
