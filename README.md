@@ -47,4 +47,8 @@ the ```my-first-stream``` Kinesis stream.
 For detailed help and configuration options:
 ```python poster.py --help``` ..or  ```python worker.py --help```, respectively.
 
-keywords: aws kinesis poster worker put get boto
+Related Resources
+-----------------
+[Amazon Kinesis Developer Guide](http://docs.aws.amazon.com/kinesis/latest/dev/introduction.html)  
+[Amazon Kinesis API Reference](http://docs.aws.amazon.com/kinesis/latest/APIReference/Welcome.html)
+[AWS SDK for Python](http://aws.amazon.com/sdkforpython)
