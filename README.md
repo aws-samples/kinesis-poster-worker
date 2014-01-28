@@ -49,6 +49,6 @@ For detailed help and configuration options:
 
 Related Resources
 -----------------
-[Amazon Kinesis Developer Guide](http://docs.aws.amazon.com/kinesis/latest/dev/introduction.html)<br/>  
-[Amazon Kinesis API Reference](http://docs.aws.amazon.com/kinesis/latest/APIReference/Welcome.html)<br/>
-[AWS SDK for Python](http://aws.amazon.com/sdkforpython)
+* [Amazon Kinesis Developer Guide](http://docs.aws.amazon.com/kinesis/latest/dev/introduction.html)  
+* [Amazon Kinesis API Reference](http://docs.aws.amazon.com/kinesis/latest/APIReference/Welcome.html)
+* [AWS SDK for Python](http://aws.amazon.com/sdkforpython)
