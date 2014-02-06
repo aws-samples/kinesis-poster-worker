@@ -52,3 +52,4 @@ Related Resources
 * [Amazon Kinesis Developer Guide](http://docs.aws.amazon.com/kinesis/latest/dev/introduction.html)  
 * [Amazon Kinesis API Reference](http://docs.aws.amazon.com/kinesis/latest/APIReference/Welcome.html)
 * [AWS SDK for Python](http://aws.amazon.com/sdkforpython)
+* [Apache 2.0 License](http://aws.amazon.com/apache2.0)
