@@ -80,7 +80,7 @@ class KinesisWorker(threading.Thread):
         while finish > datetime.datetime.now():
             try:
                 response = kinesis.get_records(next_iterator, limit=25)
-                self.total_records += len(response)
+                self.total_records += len(response['Records'])
 
                 if len(response['Records']) > 0:
                     print ('\n+-> {1} Got {0} Worker Records'.format(
