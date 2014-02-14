@@ -117,7 +117,7 @@ that hunt for the word "egg" in records from each shard.''',
     threads = []
     start_time = datetime.datetime.now()
     for shard_id in xrange(len(shards)):
-        worker_name = 'shard_worker: %s' % shard_id
+        worker_name = 'shard_worker:%s' % shard_id
         print ('#-> shardId:', shards[shard_id]['ShardId'])
         worker = KinesisWorker(
             stream_name=args.stream_name,
