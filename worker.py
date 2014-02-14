@@ -23,7 +23,6 @@ import time
 import datetime
 
 from argparse import RawTextHelpFormatter
-from boto.kinesis.exceptions import ResourceNotFoundException
 from boto.kinesis.exceptions import ProvisionedThroughputExceededException
 import poster
 
