@@ -14,6 +14,7 @@
 from __future__ import print_function
 
 import sys
+import re
 import boto
 import argparse
 import json
@@ -40,10 +41,12 @@ iter_type_after = 'AFTER_SEQUENCE_NUMBER'
 iter_type_trim = 'TRIM_HORIZON'
 iter_type_latest = 'LATEST'
 
+EGG_PATTERN = re.compile('egg')
+
 def find_eggs(records):
 	for record in records:
 		text = record['Data'].lower()
-		locs = [n for n in xrange(len(text)) if text.find('egg', n) == n]
+		locs = [m.start() for m in EGG_PATTERN.finditer(text)]
 		if len(locs) > 0:
 			print ('+--> egg location:', locs, '<--+')
 
