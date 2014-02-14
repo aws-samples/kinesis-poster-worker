@@ -158,7 +158,7 @@ the stream [default: 30]''')
             # Create a KinesisPoster thread up to the poster_count value
             for pid in xrange(args.poster_count):
                 # create poster name per poster thread
-                poster_name = 'shard_poster:'+str(pid)
+                poster_name = 'shard_poster: %s' % pid
                 # create partition key per poster thread
                 part_key = args.partition_key + '-' + str(pid)
                 poster = KinesisPoster(
