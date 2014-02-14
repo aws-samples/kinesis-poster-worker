@@ -143,3 +143,4 @@ that hunt for the word "egg" in records from each shard.''',
     print ("  Total Records:", total_records)
     print ("     Total Time:", duration)
     print ("  Records / sec:", total_records / duration)
+    print ("  Worker sleep interval:", args.sleep_interval)
