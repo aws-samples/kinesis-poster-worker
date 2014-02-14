@@ -45,11 +45,15 @@ def get_or_create_stream(stream_name, shard_count):
         print (json.dumps(stream, sort_keys=True, indent=2,
             separators=(',', ': ')))
     except ResourceNotFoundException as rnfe:
-        while (stream is None) or (stream['StreamStatus'] is not 'ACTIVE'):
-            print ('Could not find ACTIVE stream:{0} trying to create.'.format(
-                stream_name))
-            stream = kinesis.create_stream(stream_name, shard_count)
-            time.sleep(0.5)
+        while (stream is None) or ('ACTIVE' not in stream['StreamDescription']['StreamStatus']):
+            if stream is None:
+                print ('Could not find ACTIVE stream:{0} trying to create.'.format(
+                    stream_name))
+                kinesis.create_stream(stream_name, shard_count)
+            else:
+                print ("Stream status: %s" % stream['StreamDescription']['StreamStatus'])
+            time.sleep(1)
+            stream = kinesis.describe_stream(stream_name)
 
     return stream
 
