@@ -143,6 +143,7 @@ the stream [default: 30]''')
     parser.add_argument('--describe_only', action='store_true', default=False,
         help='''only describe the Kinesis stream matching the given stream_name''')
 
+    threads = []
     args = parser.parse_args()
     if (args.delete_stream):
         # delete the given Kinesis stream name
@@ -157,7 +158,6 @@ the stream [default: 30]''')
                 separators=(',', ': ')))
         else:
             stream = get_or_create_stream(args.stream_name, args.shard_count)
-            threads = []
             # Create a KinesisPoster thread up to the poster_count value
             for pid in xrange(args.poster_count):
                 # create poster name per poster thread
