@@ -72,9 +72,9 @@ class KinesisPoster(threading.Thread):
     Kinesis stream.
     """
     def __init__(self, stream_name, partition_key, poster_time=30, quiet=False,
-                 name=None, group=None, args=(), kwargs={}):
+                 name=None, group=None, filename=None, args=(), kwargs={}):
         super(KinesisPoster, self).__init__(name=name, group=group,
-                                          args=args, kwargs=kwargs)
+                                            args=args, kwargs=kwargs)
         self._pending_records = []
         self.stream_name = stream_name
         self.partition_key = partition_key
@@ -86,11 +86,20 @@ class KinesisPoster(threading.Thread):
         ]
         self.poster_time = poster_time
         self.total_records = 0
+        self.file_contents = None
+        if filename is not None:
+            print('~> opening file:{0}'.format(filename))
+            with open(filename, 'r') as content_file:
+                self.file_contents = content_file.read(40000)
 
     def add_records(self, records):
         """ Add given records to the Poster's pending records list.
         """
-        self._pending_records.extend(records)
+        print('~> adding records:{0}'.format(records))
+        if len(records) is 1:
+            self._pending_records.extend(records[0])
+        else:
+            self._pending_records.extend(records)
 
     def put_all_records(self):
         """Put all pending records in the Kinesis stream."""
@@ -99,6 +108,15 @@ class KinesisPoster(threading.Thread):
         self.put_records(precs)
         self.total_records += len(precs)
         return len(precs)
+
+    def put_file_contents(self):
+        if self.file_contents:
+            response = kinesis.put_record(
+                stream_name=self.stream_name,
+                data=self.file_contents, partition_key=self.partition_key)
+            self.total_records += 1
+            if self.quiet is False:
+                print ("-= put seqNum:", response['SequenceNumber'])
 
     def put_records(self, records):
         """Put the given records in the Kinesis stream."""
@@ -113,10 +131,12 @@ class KinesisPoster(threading.Thread):
         start = datetime.datetime.now()
         finish = start + datetime.timedelta(seconds=self.poster_time)
         while finish > datetime.datetime.now():
-            self.add_records(self.default_records)
+            if self.file_contents:
+                self.put_file_contents()
+            else:
+                self.add_records(self.default_records)
             records_put = self.put_all_records()
             if self.quiet is False:
-                print(self.partition_key, ' Records Put:', records_put)
                 print(' Total Records Put:', self.total_records)
 
 
@@ -131,11 +151,13 @@ if __name__ == '__main__':
     parser.add_argument('--partition_key', default='PyKinesisExample',
         help='''the partition key to use when communicating records to the
 stream [default: 'PyKinesisExample-##']''')
-    parser.add_argument('--poster_count', type=int, default=10,
+    parser.add_argument('--poster_count', type=int, default=2,
         help='''the number of poster threads [default: 10]''')
     parser.add_argument('--poster_time', type=int, default=30,
         help='''how many seconds the poster threads should put records into
 the stream [default: 30]''')
+    parser.add_argument('--record_file', type=str, default=None,
+        help='''the file whose contents to use as a record''')
     parser.add_argument('--quiet', action='store_true', default=False,
         help='''reduce console output to just initialization info''')
     parser.add_argument('--delete_stream', action='store_true', default=False,
@@ -169,6 +191,7 @@ the stream [default: 30]''')
                     partition_key=part_key,  # poster's partition key
                     poster_time=args.poster_time,
                     name=poster_name,  # thread name
+                    filename=args.record_file,
                     quiet=args.quiet)
                 poster.daemon = True
                 threads.append(poster)
