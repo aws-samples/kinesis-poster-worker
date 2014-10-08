@@ -51,12 +51,18 @@ def find_eggs(records):
             print ('+--> egg location:', locs, '<--+')
 
 
+def echo_records(records):
+    for record in records:
+        text = record['Data']
+        print('+--> echo record:\n{0}'.format(text))
+
+
 class KinesisWorker(threading.Thread):
     """The Worker thread that repeatedly gets records from a given Kinesis
     stream."""
     def __init__(self, stream_name, shard_id, iterator_type,
                  worker_time=30, sleep_interval=0.5,
-                 name=None, group=None, args=(), kwargs={}):
+                 name=None, group=None, echo=False, args=(), kwargs={}):
         super(KinesisWorker, self).__init__(name=name, group=group,
                                           args=args, kwargs=kwargs)
         self.stream_name = stream_name
@@ -65,6 +71,7 @@ class KinesisWorker(threading.Thread):
         self.worker_time = worker_time
         self.sleep_interval = sleep_interval
         self.total_records = 0
+        self.echo = echo
 
     def run(self):
         my_name = threading.current_thread().name
@@ -85,7 +92,10 @@ class KinesisWorker(threading.Thread):
                 if len(response['Records']) > 0:
                     print ('\n+-> {1} Got {0} Worker Records'.format(
                         len(response['Records']), my_name))
-                    find_eggs(response['Records'])
+                    if self.echo:
+                        echo_records(response['Records'])
+                    else:
+                        find_eggs(response['Records'])
                 else:
                     sys.stdout.write('.')
                     sys.stdout.flush()
@@ -106,6 +116,8 @@ that hunt for the word "egg" in records from each shard.''',
         help='''the worker's duration of operation in seconds [default: 30]''')
     parser.add_argument('--sleep_interval', type=float, default=0.1,
         help='''the worker's work loop sleep interval in seconds [default: 0.1]''')
+    parser.add_argument('--echo', action='store_true', default=False,
+        help='''the worker should turn off egg finding and just echo records to the console''')
 
     args = parser.parse_args()
 
@@ -126,6 +138,7 @@ that hunt for the word "egg" in records from each shard.''',
             iterator_type=iter_type_latest,  # uses LATEST
             worker_time=args.worker_time,
             sleep_interval=args.sleep_interval,
+            echo=args.echo,
             name=worker_name
             )
         worker.daemon = True
