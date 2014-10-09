@@ -10,7 +10,7 @@ threads to:
 
 _Worker_ is a thread-per-shard client that:  
  1. gets batches of records, and then
- 2. seeks through the records for the word '```egg```'
+ 2. seeks through the records for the word '```egg```' or simply echoes the record to the screen
 
 Multiple Poster or Worker clients can be run simultaneously to generate 
 multi-threaded load on a Kinesis stream. 
