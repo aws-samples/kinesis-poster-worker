@@ -33,10 +33,7 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 #     aws_access_key_id = <your access key>
 #     aws_secret_access_key = <your secret key>
 
-kinesis = boto.connect_kinesis()
-
 make_string = lambda x: "".join(choice(lowercase) for i in range(x))
-
 
 def get_or_create_stream(stream_name, shard_count):
     stream = None
@@ -146,6 +143,8 @@ if __name__ == '__main__':
         formatter_class=RawTextHelpFormatter)
     parser.add_argument('stream_name',
         help='''the name of the Kinesis stream to either connect with or create''')
+    parser.add_argument('--region', type=str, default='us-east-1',
+        help='''the name of the Kinesis region to connect with [default: us-east-1]''')
     parser.add_argument('--shard_count', type=int, default=1,
         help='''the number of shards to create in the stream, if creating [default: 1]''')
     parser.add_argument('--partition_key', default='PyKinesisExample',
@@ -167,6 +166,7 @@ the stream [default: 30]''')
 
     threads = []
     args = parser.parse_args()
+    kinesis = boto.kinesis.connect_to_region(region_name = args.region)
     if (args.delete_stream):
         # delete the given Kinesis stream name
         kinesis.delete_stream(stream_name=args.stream_name)
