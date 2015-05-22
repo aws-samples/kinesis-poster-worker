@@ -34,7 +34,7 @@ import poster
 #     aws_access_key_id = <your access key>
 #     aws_secret_access_key = <your secret key>
 
-kinesis = boto.connect_kinesis()
+#kinesis = boto.connect_kinesis()
 iter_type_at = 'AT_SEQUENCE_NUMBER'
 iter_type_after = 'AFTER_SEQUENCE_NUMBER'
 iter_type_trim = 'TRIM_HORIZON'
@@ -112,6 +112,8 @@ that hunt for the word "egg" in records from each shard.''',
         formatter_class=RawTextHelpFormatter)
     parser.add_argument('stream_name',
         help='''the name of the Kinesis stream to either create or connect''')
+    parser.add_argument('--region', type=str, default='us-east-1',
+        help='''the name of the Kinesis region to connect with [default: us-east-1]''') 
     parser.add_argument('--worker_time', type=int, default=30,
         help='''the worker's duration of operation in seconds [default: 30]''')
     parser.add_argument('--sleep_interval', type=float, default=0.1,
@@ -120,7 +122,7 @@ that hunt for the word "egg" in records from each shard.''',
         help='''the worker should turn off egg finding and just echo records to the console''')
 
     args = parser.parse_args()
-
+    kinesis = boto.kinesis.connect_to_region(region_name = args.region)
     stream = kinesis.describe_stream(args.stream_name)
     print (json.dumps(stream, sort_keys=True, indent=2, separators=(',', ': ')))
     shards = stream['StreamDescription']['Shards']
